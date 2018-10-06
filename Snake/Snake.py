@@ -1,4 +1,4 @@
-
+# Original project by Auxence, forked by KikooDX
 #   ________             ______       
 #   __  ___/____________ ___  /______ 
 #   _____ \__  __ \  __ `/_  //_/  _ \
@@ -32,7 +32,10 @@ def reset(event):
 
     # 0 = nord, 1 = est, 2 = sud, 3 = ouest
     direction = 1
-    
+
+def pause(event):
+    input()
+
 def haut(event):
     global direction
     if direction != 2 :
@@ -184,7 +187,7 @@ def refresh():
     
 # creation de la fenetre + canevas + initialisation fonctions
 root = Tk()
-root.title("Snake v 1.0 by Auxence")
+root.title("Snake v 1.1")
 root.iconbitmap("snake_icon.ico")
 root.resizable(width=False, height=False)
 
@@ -197,11 +200,21 @@ fruit_x = randint(1, lim_x / 8 - 1) * 8
 fruit_y = randint(1, lim_y / 8 - 1) * 8
 fruit = canvas.create_rectangle(fruit_x - 4, fruit_y - 4, fruit_x + 4, fruit_y + 4, fill = "#A44040", outline = "#A44040")
 
+root.bind("<r>", reset)
+root.bind("<p>", pause)
+
 root.bind("<Up>", haut)
 root.bind("<Down>", bas)
 root.bind("<Left>", gauche)
 root.bind("<Right>", droite)
-root.bind("<r>", reset)
+root.bind("<w>", haut)
+root.bind("<s>", bas)
+root.bind("<a>", gauche)
+root.bind("<d>", droite)
+root.bind("<k>", haut)
+root.bind("<j>", bas)
+root.bind("<h>", gauche)
+root.bind("<l>", droite)
 
 refresh()
 
