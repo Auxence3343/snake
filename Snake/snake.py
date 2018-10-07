@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # *-* coding: utf-8 *-*
 
-# Original project by Auxence, forked by KikooDX
+# Original project by Auxence, with contributions from KikooDX
 #   ________             ______       
 #   __  ___/____________ ___  /______ 
 #   _____ \__  __ \  __ `/_  //_/  _ \
