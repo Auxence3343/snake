@@ -1,13 +1,17 @@
+#!/usr/bin/env python
+# *-* coding: utf-8 *-*
 
+# Original project by Auxence, forked by KikooDX
 #   ________             ______       
 #   __  ___/____________ ___  /______ 
 #   _____ \__  __ \  __ `/_  //_/  _ \
 #   ____/ /_  / / / /_/ /_  ,<  /  __/
-#   /____/ /_/ /_/\__,_/ /_/|_| \___/ 
-                                  
+#   /____/ /_/ /_/\__,_/ /_/|_| \___/
+
 from tkinter import *
 from random import *
 
+global difficulte, delai, title
 list = []
 
 life = 1
@@ -15,6 +19,7 @@ lim_x = 480
 lim_y = 320
 score = 0
 add = 3
+title = "Snake v. 1.2"
 
 
 # 0 = nord, 1 = est, 2 = sud, 3 = ouest
@@ -25,14 +30,18 @@ def reset(event):
     list = []
 
     life = 1
-    lim_x = 480
-    lim_y = 320
+    lim_x = 64
+    lim_y = 48
     score = 0
     add = 3
 
     # 0 = nord, 1 = est, 2 = sud, 3 = ouest
     direction = 1
-    
+
+# Ne fonctionne PAS sous linux
+def pause(event):
+    input()
+
 def haut(event):
     global direction
     if direction != 2 :
@@ -138,7 +147,8 @@ def refresh():
                     y_col = 1
                     
                 if x_col == 1 and y_col == 1:
-                    score += 1
+                    score += difficulte
+                    root.title("{}, Score : {}".format(title, score))
                     add += 1
                     fruit_x = randint(1, lim_x / 8 - 1) * 8
                     fruit_y = randint(1, lim_y / 8 - 1) * 8
@@ -178,14 +188,33 @@ def refresh():
     
     if life > 0 :
         #print (list)
-        root.after(60, refresh)
+        root.after(delai, refresh)
     else :
-        txt = canvas.create_text(lim_x / 4 * 2, lim_y / 4 * 2, text = "Perdu, Score = " + str(score), fill = "#A44040")
-    
-# creation de la fenetre + canevas + initialisation fonctions
+        root.quit()
+
+# Choix de la difficulté
+difficulte = 0
+
+while difficulte % 1 or difficulte < 1 or difficulte > 4:
+    difficulte = input("Difficulty :\n 1. Easy\n 2. Normal\
+\n 3. Hard\n 4. Insane\n> ")
+    try:
+        difficulte = int(difficulte)
+        print()
+    except:
+        print("Please insert a number.\n")
+        difficulte = 0
+
+delai = 100 - (difficulte * 20)
+if difficulte == 4:
+    difficulte = 5
+
+# Création de la fenetre + canevas + initialisation fonctions
 root = Tk()
-root.title("Snake v 1.0 by Auxence")
-root.iconbitmap("snake_icon.ico")
+root.title(title)
+# A décommenter si vous voulez afficher l'icone (ne fonctionne pas sur certains
+# systèmes d'exploitation)
+#root.iconbitmap("snake_icon.ico")
 root.resizable(width=False, height=False)
 
 canvas = Canvas(root, width = lim_x, height = lim_y, background = '#262626')
@@ -197,13 +226,33 @@ fruit_x = randint(1, lim_x / 8 - 1) * 8
 fruit_y = randint(1, lim_y / 8 - 1) * 8
 fruit = canvas.create_rectangle(fruit_x - 4, fruit_y - 4, fruit_x + 4, fruit_y + 4, fill = "#A44040", outline = "#A44040")
 
+# Touche "reset" commentée car non fonctionnelle.
+#root.bind("<r>", reset)
+root.bind("<p>", pause)
+
+# Les touches de déplacement.
+# Flèches
 root.bind("<Up>", haut)
 root.bind("<Down>", bas)
 root.bind("<Left>", gauche)
 root.bind("<Right>", droite)
-root.bind("<r>", reset)
 
+# QWERTY
+root.bind("<w>", haut)
+root.bind("<s>", bas)
+root.bind("<a>", gauche)
+root.bind("<d>", droite)
+
+# C'est comme Vim
+root.bind("<k>", haut)
+root.bind("<j>", bas)
+root.bind("<h>", gauche)
+root.bind("<l>", droite)
+
+# Lancement programme principal.
 refresh()
 
 root.mainloop()
+root.destroy()
 
+print("You scored {} points ! Well played !\n".format(score))
