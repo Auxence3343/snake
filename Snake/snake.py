@@ -11,7 +11,7 @@
 from tkinter import *
 from random import *
 
-global difficulte, delai, title
+global difficulte, delai, title, inPause
 list = []
 
 life = 1
@@ -19,10 +19,9 @@ lim_x = 480
 lim_y = 320
 score = 0
 add = 3
-title = "Snake v. 1.2"
-
-
-# 0 = nord, 1 = est, 2 = sud, 3 = ouest
+title = "Snake v. 1.2.1"
+inPause = False
+#0 = nord, 1 = est, 2 = sud, 3 = ouest
 direction = 1
 
 def reset(event):
@@ -38,9 +37,9 @@ def reset(event):
     # 0 = nord, 1 = est, 2 = sud, 3 = ouest
     direction = 1
 
-# Ne fonctionne PAS sous linux
 def pause(event):
-    input()
+    global inPause
+    inPause = not inPause
 
 def haut(event):
     global direction
@@ -76,114 +75,117 @@ def add_corp(list,x,y):
 def refresh():
     global list
     global life, direction, l_pos_x, l_pos_y, add, score, fruit_x, fruit_y, fruit
-    x = 0
+    global inPause
     
-    while x < len(list):
-
-        # deplacement case 0
+    if not inPause:
+        x = 0
         
-        pos_x = list[x][1]
-        pos_y = list[x][2]
+        while x < len(list):
 
-        if x == 0 :
-            l_pos_x_tmp = pos_x
-            l_pos_y_tmp = pos_y
+            # deplacement case 0
+        
+            pos_x = list[x][1]
+            pos_y = list[x][2]
+
+            if x == 0 :
+                l_pos_x_tmp = pos_x
+                l_pos_y_tmp = pos_y
             
-            if direction == 0:
+                if direction == 0:
 
-                pos_x = pos_x + 0
-                pos_y = pos_y - 8
+                    pos_x = pos_x + 0
+                    pos_y = pos_y - 8
 
-                canvas.coords( list[x][0], pos_x - 4, pos_y - 4, pos_x + 4, pos_y + 4)
+                    canvas.coords( list[x][0], pos_x - 4, pos_y - 4, pos_x + 4, pos_y + 4)
 
-            if direction == 1:
+                if direction == 1:
 
-                pos_x = pos_x + 8
-                pos_y = pos_y + 0
+                    pos_x = pos_x + 8
+                    pos_y = pos_y + 0
 
-                canvas.coords( list[x][0], pos_x - 4, pos_y - 4, pos_x + 4, pos_y + 4)
+                    canvas.coords( list[x][0], pos_x - 4, pos_y - 4, pos_x + 4, pos_y + 4)
 
-            if direction == 2:
+                if direction == 2:
 
-                pos_x = pos_x + 0
-                pos_y = pos_y + 8
+                    pos_x = pos_x + 0
+                    pos_y = pos_y + 8
 
-                canvas.coords( list[x][0], pos_x - 4, pos_y - 4, pos_x + 4, pos_y + 4)
+                    canvas.coords( list[x][0], pos_x - 4, pos_y - 4, pos_x + 4, pos_y + 4)
 
-            if direction == 3:
+                if direction == 3:
 
-                pos_x = pos_x - 8
-                pos_y = pos_y + 0
+                    pos_x = pos_x - 8
+                    pos_y = pos_y + 0
 
-                canvas.coords( list[x][0], pos_x - 4, pos_y - 4, pos_x + 4, pos_y + 4)
+                    canvas.coords( list[x][0], pos_x - 4, pos_y - 4, pos_x + 4, pos_y + 4)
                 
             
-            #collision entre les cases
+                #collision entre les cases
                     
-            for items in list[1:]:
-                x_col = 0
-                y_col = 0
+                for items in list[1:]:
+                    x_col = 0
+                    y_col = 0
 
-                x_test = items[1]
-                y_test = items[2]
+                    x_test = items[1]
+                    y_test = items[2]
                 
-                if pos_x - 4 < x_test and x_test < pos_x + 4 :
-                    x_col = 1
+                    if pos_x - 4 < x_test and x_test < pos_x + 4 :
+                        x_col = 1
                     
-                if pos_y - 4 < y_test and y_test < pos_y + 4 :
-                    y_col = 1
-                    
-                if x_col == 1 and y_col == 1:
-                    life = life - 1
+                    if pos_y - 4 < y_test and y_test < pos_y + 4 :
+                        y_col = 1
+                        
+                    if x_col == 1 and y_col == 1:
+                        life = life - 1
 
-                # collision avec fruit
-                x_col = 0
-                y_col = 0
-                
-                if pos_x - 4 < fruit_x and fruit_x < pos_x + 4 :
-                    x_col = 1
+                    # collision avec fruit
+                    x_col = 0
+                    y_col = 0
                     
-                if pos_y - 4 < fruit_y and fruit_y < pos_y + 4 :
-                    y_col = 1
+                    if pos_x - 4 < fruit_x and fruit_x < pos_x + 4 :
+                        x_col = 1
+                        
+                    if pos_y - 4 < fruit_y and fruit_y < pos_y + 4 :
+                        y_col = 1
+                        
+                    if x_col == 1 and y_col == 1:
+                        score += difficulte
+                        root.title("{}, Score : {}".format(title, score))
+                        add += 1
+                        fruit_x = randint(1, lim_x / 8 - 1) * 8
+                        fruit_y = randint(1, lim_y / 8 - 1) * 8
+                        canvas.coords(fruit, fruit_x - 4, fruit_y - 4, fruit_x + 4, fruit_y + 4)
                     
-                if x_col == 1 and y_col == 1:
-                    score += difficulte
-                    root.title("{}, Score : {}".format(title, score))
-                    add += 1
-                    fruit_x = randint(1, lim_x / 8 - 1) * 8
-                    fruit_y = randint(1, lim_y / 8 - 1) * 8
-                    canvas.coords(fruit, fruit_x - 4, fruit_y - 4, fruit_x + 4, fruit_y + 4)
-                    
-        else:
-            # deplacement cases 1 - n
-            l_pos_x_tmp = pos_x
-            l_pos_y_tmp = pos_y
+            else:
+                # deplacement cases 1 - n
+                l_pos_x_tmp = pos_x
+                l_pos_y_tmp = pos_y
 
-            pos_x = l_pos_x
-            pos_y = l_pos_y
+                pos_x = l_pos_x
+                pos_y = l_pos_y
             
-            canvas.coords( list[x][0], pos_x - 4, pos_y - 4, pos_x + 4, pos_y + 4)
+                canvas.coords( list[x][0], pos_x - 4, pos_y - 4, pos_x + 4, pos_y + 4)
 
-        list[x][1] = pos_x
-        list[x][2] = pos_y
+            list[x][1] = pos_x
+            list[x][2] = pos_y
 
-        l_pos_x = l_pos_x_tmp
-        l_pos_y = l_pos_y_tmp
+            l_pos_x = l_pos_x_tmp
+            l_pos_y = l_pos_y_tmp
 
-        # collision avec les mur
+            # collision avec les mur
         
-        if pos_x + 4 > lim_x or pos_x - 4 < 0 :
-            life = life - 1
+            if pos_x + 4 > lim_x or pos_x - 4 < 0 :
+                life = life - 1
         
-        if pos_y + 4 > lim_y or pos_y - 4 < 0 :
-            life = life - 1
+            if pos_y + 4 > lim_y or pos_y - 4 < 0 :
+                life = life - 1
         
-        # agrandissement de la taille du serpent
+            # agrandissement de la taille du serpent
             
-        if add >= 1 and x == len(list) - 1 :
-            list = add_corp(list, l_pos_x_tmp, l_pos_y_tmp)
-            add = add - 1
-        x += 1
+            if add >= 1 and x == len(list) - 1 :
+                list = add_corp(list, l_pos_x_tmp, l_pos_y_tmp)
+                add = add - 1
+            x += 1
         
     
     if life > 0 :
