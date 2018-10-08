@@ -41,6 +41,10 @@ def pause(event):
     global inPause
     inPause = not inPause
 
+def quitter(event):
+    global life
+    life = -1
+
 def haut(event):
     global direction
     if direction != 2 :
@@ -136,7 +140,7 @@ def refresh():
                         y_col = 1
                         
                     if x_col == 1 and y_col == 1:
-                        life = life - 1
+                        life -= 1
 
                     # collision avec fruit
                     x_col = 0
@@ -231,6 +235,7 @@ fruit = canvas.create_rectangle(fruit_x - 4, fruit_y - 4, fruit_x + 4, fruit_y +
 # Touche "reset" commentée car non fonctionnelle.
 #root.bind("<r>", reset)
 root.bind("<p>", pause)
+root.bind("<Escape>", quitter)
 
 # Les touches de déplacement.
 # Flèches
@@ -256,5 +261,8 @@ refresh()
 
 root.mainloop()
 root.destroy()
+
+if life == -1:
+    print("You made the choice to quit the game earlier.")
 
 print("You scored {} points ! Well played !\n".format(score))
